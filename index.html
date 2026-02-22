@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>LC Performance Lab</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="container">
+
+  <header>
+    <h1>Leaving Cert Performance Lab</h1>
+    <div id="studentNameDisplay"></div>
+  </header>
+
+  <section id="loginSection">
+    <input type="text" id="studentName" placeholder="Enter your name">
+    <button onclick="login()">Enter</button>
+  </section>
+
+  <section id="dashboard" class="hidden">
+
+    <div class="summary">
+      <div>
+        <h3>Overall Average</h3>
+        <div id="overallAverage">--%</div>
+      </div>
+      <div>
+        <h3>Projected Band</h3>
+        <div id="projectedBand">--</div>
+      </div>
+      <div>
+        <h3>Marks Recovered</h3>
+        <div id="marksRecovered">0</div>
+      </div>
+    </div>
+
+    <h2>Subjects</h2>
+
+    <div class="tiles" id="tiles"></div>
+
+  </section>
+
+  <section id="subjectModal" class="hidden">
+    <h2 id="subjectTitle"></h2>
+
+    <input type="number" id="newScore" placeholder="Overall %">
+
+    <h4>Optional Section Breakdown</h4>
+    <div id="sectionInputs"></div>
+
+    <button onclick="addResult()">Add Result</button>
+    <button onclick="closeSubject()">Close</button>
+
+    <canvas id="chartCanvas"></canvas>
+
+    <div id="coachOutput"></div>
+    <div id="drillOutput"></div>
+
+  </section>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
