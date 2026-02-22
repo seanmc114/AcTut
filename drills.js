@@ -1,293 +1,294 @@
-/* drills.js — LC Drill Banks v2 (Scaffold-enabled)
-   Rapid:   { q, a }
-   Cloze:   { text, blanks, bank? }
-   Structured: { q, a? , scaffold:{build:[], strength:[], exam:[]} }
+/* drills.js — LC Drill Banks (Serious LC Edition)
+   Proper exam-mapped banks.
 */
 
 (function(){
-  const N = (s)=> String(s||"").trim().toLowerCase();
 
-  const S = (build, strength, exam)=>({ build, strength, exam });
+const N = (s)=> String(s||"").trim().toLowerCase();
 
-  // Seed banks (you can expand later without touching engine)
-  const DRILL_BANK = {
-    "Maths": {
-      rapid: [
-        { q:"State the quadratic formula (type a recognisable version)", a:["(-b±√(b^2-4ac))/(2a)","(-b±sqrt(b^2-4ac))/(2a)","quadratic formula"] },
-        { q:"Differentiate x^3", a:["3x^2","3x^2 + c","3x^2"] },
-        { q:"Expand (x+3)(x-2)", a:["x^2+x-6","x^2 + x - 6"] },
-        { q:"Simplify: (x^2)(x^3)", a:["x^5","x^5"] },
-        { q:"Solve: 2x=10", a:["5","x=5"] },
-        { q:"Rearrange: y=3x+2 for x", a:["(y-2)/3","x=(y-2)/3"] },
-        { q:"sin(90°) =", a:["1","1.0"] },
-        { q:"Mean of 2 and 8 =", a:["5"] },
-        { q:"Probability of a certain event =", a:["1"] },
-        { q:"Constant ratio C/D for a circle =", a:["pi","π"] },
-      ],
-      structured: [
-        { q:"Solve: x^2 - 5x + 6 = 0",
-          a:["2,3","2 and 3","x=2 and x=3","x=2,3"],
-          scaffold: S(
-            ["1) Set equation to 0", "2) Factorise", "3) Set each bracket to 0", "4) Write both solutions"],
-            ["Factorise → set brackets = 0 → two answers"],
-            ["Show method briefly (factorise or formula)"]
-          )
-        },
-        { q:"Differentiate: 3x^2 + 4x",
-          a:["6x+4","6x + 4"],
-          scaffold: S(
-            ["1) Differentiate term-by-term", "2) Power rule: d/dx(x^n)=n x^(n-1)", "3) Simplify"],
-            ["Power rule → simplify"],
-            ["Answer + 1 method line"]
-          )
-        },
-        { q:"Gradient between (1,2) and (3,8)",
-          a:["3","m=3"],
-          scaffold: S(
-            ["1) Use m=(y2-y1)/(x2-x1)", "2) Substitute: (8-2)/(3-1)", "3) Simplify"],
-            ["m=(8-2)/(3-1) → simplify"],
-            ["State formula or substitution"]
-          )
-        },
-        { q:"Probability: if P(A)=0.3, find P(not A)",
-          a:["0.7","7/10"],
-          scaffold: S(
-            ["1) Use P(not A)=1-P(A)", "2) Substitute: 1-0.3", "3) Answer"],
-            ["1 - 0.3 = ?"],
-            ["One line: 1-P(A)"]
-          )
-        },
-        { q:"Rearrange: V=IR for I",
-          a:["i=v/r","i = v/r","v/r"],
-          scaffold: S(
-            ["1) Start: V=IR", "2) Divide both sides by R", "3) I=V/R"],
-            ["Divide by R → I=V/R"],
-            ["I=V/R"]
-          )
-        }
-      ],
-      cloze: [
-        { text:"The derivative of x^n is ___ x^(n-1).", blanks:["n"], bank:["n","n-1","1/n"] },
-        { text:"Slope formula: m = (y2 - y1) / (___ - x1).", blanks:["x2"], bank:["x2","x","y2"] },
-        { text:"P(A or B) = P(A) + P(B) - P(A and ___).", blanks:["B"], bank:["B","A","not A"] },
-        { text:"Area of circle = ___ r^2.", blanks:["π"], bank:["π","2π","pi"] },
-        { text:"To solve a quadratic, set it equal to ___ first.", blanks:["0"], bank:["0","1","c"] }
-      ]
+function S(build,strength,exam){
+  return { build,strength,exam };
+}
+
+/* =========================
+   MATHS
+========================= */
+
+const Maths = {
+  rapid: [
+    { q:"Solve: 3x + 5 = 20", a:["5","x=5"] },
+    { q:"Differentiate: 4x^3", a:["12x^2"] },
+    { q:"Solve: x^2 - 16 = 0", a:["4,-4","4 and -4","x=4,-4"] },
+    { q:"sin(30°)", a:["0.5","1/2"] },
+    { q:"Factorise: x^2 + 5x + 6", a:["(x+2)(x+3)"] },
+    { q:"Mean of 4, 6, 10", a:["20/3","6.67","6.666"] },
+    { q:"d/dx (7)", a:["0"] },
+    { q:"Rearrange: A = πr^2 for r", a:["√(a/π)","sqrt(a/pi)"] },
+    { q:"Solve: 2^x = 8", a:["3"] },
+    { q:"Expand: (x+4)^2", a:["x^2+8x+16"] }
+  ],
+
+  structured: [
+    { q:"Solve fully: x^2 - 5x + 6 = 0",
+      scaffold: S(
+        ["Set equal to 0","Factorise","Set brackets = 0","State 2 solutions"],
+        ["Factorise → 2 solutions"],
+        ["Show method briefly"]
+      )
     },
-
-    "English": {
-      rapid: [
-        { q:"Write a good linker: 'Furthermore,'", a:["furthermore","furthermore,"] },
-        { q:"Write a contrast linker: 'However,'", a:["however","however,"] },
-        { q:"Technique: repetition / rhetorical question / emotive language (type one)", a:["repetition","rhetorical question","emotive language","statistics","rule of three","anecdote"] },
-        { q:"What does imagery create? (1 word)", a:["picture","image","visual"] },
-        { q:"What is 'tone'? (1 word example: serious)", a:["serious","sarcastic","humorous","formal","informal","critical"] },
-        { q:"Thesis starter: 'In this text, ...' (type start)", a:["in this text","in this text,"] },
-        { q:"Conclusion cue: 'Overall,'", a:["overall","overall,"] },
-        { q:"What is a theme? (1 word)", a:["idea","message","topic"] },
-        { q:"PEE stands for? (type PEE)", a:["pee","p.e.e","p e e"] },
-        { q:"Q + I stands for quote + ___", a:["insight","interpretation","inference"] },
-      ],
-      structured: [
-        { q:"Paragraph (PEE) – write the order",
-          a:["point|evidence|explain","point | evidence | explain","pee"],
-          scaffold: S(
-            ["Point: make your claim", "Evidence: embed a short quote", "Explain: effect + link to question"],
-            ["Point → Quote → Effect (link back)"],
-            ["One tight PEE paragraph"]
-          )
-        },
-        { q:"Embedded quote frame (type the frame)",
-          a:["“” which shows","which shows"],
-          scaffold: S(
-            ["He suggests “___” which shows ___", "Then: This makes the reader ___"],
-            ["“___” shows ___ → effect"],
-            ["Quote + effect"]
-          )
-        },
-        { q:"Comparative frame (3 parts)",
-          a:["similarity","difference","effect"],
-          scaffold: S(
-            ["Similarity: both texts…", "Difference: however…", "Effect: this changes…"],
-            ["Both… / However… / Therefore…"],
-            ["Compare + judge"]
-          )
-        },
-        { q:"Timing plan (Plan/Write/Check)",
-          a:["plan 5 | write 35 | check 5","plan 5 write 35 check 5","plan/write/check"],
-          scaffold: S(
-            ["Plan (5): thesis + 3 points", "Write (35): PEE x 3", "Check (5): quotes + spelling + link"],
-            ["5/35/5 with PEE"],
-            ["Quick plan + check"]
-          )
-        },
-        { q:"Intro scaffold (2 lines): thesis + 2 points",
-          a:["thesis","point"],
-          scaffold: S(
-            ["Line 1: Thesis (your argument)", "Line 2: Two points you will prove"],
-            ["Thesis + 2 points"],
-            ["Short thesis"]
-          )
-        }
-      ],
-      cloze: [
-        { text:"A paragraph should make a ___, support it with ___, then explain the ___.", blanks:["point","evidence","effect"], bank:["point","evidence","effect","theme"] },
-        { text:"A rhetorical question makes the reader ___ rather than get an ___.", blanks:["think","answer"], bank:["think","answer","laugh"] },
-        { text:"A thesis is the main ___ of your answer.", blanks:["argument"], bank:["argument","quote","title"] },
-        { text:"Analyse by focusing on ___ and ___ (not retelling).", blanks:["language","effect"], bank:["language","effect","spelling"] },
-        { text:"Conclusions should ___ the thesis and end with a final ___.", blanks:["restate","insight"], bank:["restate","insight","quote"] }
-      ]
+    { q:"Differentiate: 3x^2 + 4x - 5",
+      scaffold: S(
+        ["Power rule each term","Simplify","Final answer"],
+        ["Power rule → simplify"],
+        ["Answer only"]
+      )
     },
+    { q:"Find gradient between (1,2) and (5,10)",
+      scaffold: S(
+        ["m = (y2-y1)/(x2-x1)","Substitute numbers","Simplify"],
+        ["Formula → substitute"],
+        ["State formula or final answer"]
+      )
+    },
+    { q:"Solve simultaneous equations (outline method)",
+      scaffold: S(
+        ["Choose substitution/elimination","Rearrange one equation","Substitute","Solve","Back substitute"],
+        ["Choose method → solve"],
+        ["State method used"]
+      )
+    },
+    { q:"Integration: ∫ 6x dx",
+      scaffold: S(
+        ["Increase power by 1","Divide by new power","Add +C"],
+        ["Power + divide + C"],
+        ["Include +C"]
+      )
+    }
+  ],
 
-    // Languages: placeholders (engine ready; swap your Turbo banks later)
-    "Spanish": placeholderLanguage("Spanish"),
-    "French": placeholderLanguage("French"),
-    "German": placeholderLanguage("German"),
+  cloze: [
+    { text:"The derivative of x^n is ___ x^(n-1).", blanks:["n"] },
+    { text:"To solve quadratics, first set equal to ___.", blanks:["0"] },
+    { text:"m = (y2 - y1) / (___ - x1).", blanks:["x2"] },
+    { text:"∫ x^2 dx = x^3 / ___ + C.", blanks:["3"] },
+    { text:"Probability of certain event = ___", blanks:["1"] }
+  ]
+};
 
-    "Accounting": scaffoldedRecallSubject("Accounting"),
-    "Economics": scaffoldedRecallSubject("Economics"),
-    "Physics": scaffoldedRecallSubject("Physics"),
-    "Biology": scaffoldedRecallSubject("Biology"),
-    "Chemistry": scaffoldedRecallSubject("Chemistry"),
-    "PE": scaffoldedRecallSubject("PE"),
-    "Home Ec": scaffoldedRecallSubject("Home Ec"),
-    "History": scaffoldedRecallSubject("History"),
-    "Geography": scaffoldedRecallSubject("Geography"),
-    "Business": scaffoldedRecallSubject("Business"),
-    "Art": scaffoldedRecallSubject("Art")
-  };
+/* =========================
+   BIOLOGY
+========================= */
 
-  function placeholderLanguage(name){
-    return {
-      rapid: [
-        { q:`${name}: translate a short core phrase (any attempt counts for now)`, a:["*"] },
-        { q:`${name}: connector (because/but) in target language (any attempt)`, a:["*"] },
-        { q:`${name}: one past time marker (any attempt)`, a:["*"] },
-        { q:`${name}: one future time marker (any attempt)`, a:["*"] },
-        { q:`${name}: opinion phrase (any attempt)`, a:["*"] },
-        { q:`${name}: one adjective (any attempt)`, a:["*"] },
-        { q:`${name}: one place word (any attempt)`, a:["*"] },
-        { q:`${name}: one hobby word (any attempt)`, a:["*"] },
-        { q:`${name}: one family word (any attempt)`, a:["*"] },
-        { q:`${name}: one school word (any attempt)`, a:["*"] },
-      ],
-      structured: [
-        { q:`${name}: sentence frame`, a:["*"],
-          scaffold: S(
-            ["Subject + verb + time", "Add a connector (because/but)", "Add one extra detail"],
-            ["Verb + connector + detail"],
-            ["One strong sentence"]
-          )
-        },
-        { q:`${name}: past tense frame`, a:["*"],
-          scaffold: S(
-            ["Time phrase (yesterday/last week)", "Past verb", "Place/detail"],
-            ["Past verb + detail"],
-            ["Past sentence"]
-          )
-        },
-        { q:`${name}: accuracy checklist`, a:["*"],
-          scaffold: S(
-            ["Check verb ending", "Check agreement", "Check accents (if relevant)"],
-            ["Ending + agreement"],
-            ["Final check"]
-          )
-        },
-        { q:`${name}: opinion paragraph plan`, a:["*"],
-          scaffold: S(
-            ["Opinion", "Reason", "Example", "Extra detail"],
-            ["Opinion + because + example"],
-            ["Short opinion"]
-          )
-        },
-        { q:`${name}: speaking support plan`, a:["*"],
-          scaffold: S(
-            ["Start phrase", "Two key points", "One extra detail", "Finish phrase"],
-            ["Start + 2 points"],
-            ["Short speak plan"]
-          )
-        }
-      ],
-      cloze: [
-        { text:`${name}: A strong answer needs a clear ___ and one extra ___.`, blanks:["verb","detail"], bank:["verb","detail","title"] },
-        { text:`${name}: Use a connector to add ___.`, blanks:["complexity"], bank:["complexity","colour","silence"] },
-        { text:`${name}: Check agreement: gender and ___.`, blanks:["number"], bank:["number","nation","noise"] },
-        { text:`${name}: Past answers need a past ___.`, blanks:["verb"], bank:["verb","noun","adjective"] },
-        { text:`${name}: Extra detail earns extra ___.`, blanks:["marks"], bank:["marks","music","magic"] },
-      ]
-    };
-  }
+const Biology = {
+  rapid: [
+    { q:"Define osmosis", a:["movement of water","water moves"] },
+    { q:"Site of respiration?", a:["mitochondria","mitochondrion"] },
+    { q:"Photosynthesis word equation (start with carbon dioxide)", a:["carbon dioxide + water"] },
+    { q:"Name a plant hormone", a:["auxin","gibberellin"] },
+    { q:"Gas taken in during respiration?", a:["oxygen"] },
+    { q:"Function of xylem?", a:["water transport"] },
+    { q:"Name one enzyme", a:["amylase","protease","lipase"] },
+    { q:"Define diffusion", a:["movement from high to low"] },
+    { q:"Role of chlorophyll?", a:["absorbs light"] },
+    { q:"Name a vitamin", a:["a","b","c","d","k"] }
+  ],
 
-  function scaffoldedRecallSubject(name){
-    // A lightweight bank: the engine + scaffolds do the heavy lifting.
-    // You can expand with real paper-specific items later without changing engine.
-    const rapid = [
-      { q:`${name}: define 1 key term (any one word)`, a:["*"] },
-      { q:`${name}: list 2 keywords for a 12-mark answer (any)`, a:["*"] },
-      { q:`${name}: one useful connector (therefore/however)`, a:["therefore","however","overall","ultimately","because"] },
-      { q:`${name}: one example phrase: "for example"`, a:["for example","e.g.","for instance"] },
-      { q:`${name}: one evaluation word`, a:["overall","therefore","however","ultimately","significant"] },
-      { q:`${name}: one diagram/data word (axis/trend/label)`, a:["axis","trend","label","increase","decrease"] },
-      { q:`${name}: one command word meaning "explain"`, a:["explain","describe","outline","evaluate"] },
-      { q:`${name}: one command word meaning "compare"`, a:["compare","contrast"] },
-      { q:`${name}: one command word meaning "give two"`, a:["state","list","name"] },
-      { q:`${name}: one timing habit (plan/check)`, a:["plan","check"] },
-    ];
+  structured: [
+    { q:"Explain photosynthesis (outline structure)",
+      scaffold: S(
+        ["Word equation","Chloroplast","Light phase","Carbon fixation","Limiting factor"],
+        ["Equation + process + limiting factor"],
+        ["Equation + explanation"]
+      )
+    },
+    { q:"Describe respiration",
+      scaffold: S(
+        ["Definition","Site","Aerobic vs anaerobic","Products"],
+        ["Definition + products"],
+        ["Clear definition"]
+      )
+    },
+    { q:"Experiment scaffold (biology)",
+      scaffold: S(
+        ["Aim","Apparatus","Method","Control","Conclusion"],
+        ["Aim → Method → Conclusion"],
+        ["Clear structure"]
+      )
+    },
+    { q:"Explain enzyme action",
+      scaffold: S(
+        ["Active site","Substrate","Lock-and-key","Denature"],
+        ["Active site + effect"],
+        ["Clear mechanism"]
+      )
+    },
+    { q:"Long question structure",
+      scaffold: S(
+        ["3 points","Explain each","Example","Diagram mention"],
+        ["Point + explain"],
+        ["Concise explanation"]
+      )
+    }
+  ],
 
-    const structured = [
-      { q:`${name}: short-answer scaffold (Define → Explain → Example)`,
-        a:["*"],
-        scaffold: S(
-          ["Define the term (1 line)", "Explain it (1–2 lines)", "Give an example"],
-          ["Define + explain + example"],
-          ["Tight define + example"]
+  cloze: [
+    { text:"The ___ is the site of respiration.", blanks:["mitochondrion"] },
+    { text:"Water moves by ___ from high to low concentration.", blanks:["osmosis"] },
+    { text:"Photosynthesis requires ___ energy.", blanks:["light"] },
+    { text:"Enzymes are ___ catalysts.", blanks:["biological"] },
+    { text:"Gas released in photosynthesis is ___.", blanks:["oxygen"] }
+  ]
+};
+
+/* =========================
+   ENGLISH
+========================= */
+
+const English = {
+  rapid: [
+    { q:"Name 3 persuasive techniques (one)", a:["repetition","emotive language","statistics","rhetorical question"] },
+    { q:"Define thesis (1 phrase)", a:["main argument"] },
+    { q:"Effect of imagery?", a:["creates picture"] },
+    { q:"Define tone", a:["attitude"] },
+    { q:"Define theme", a:["central idea"] },
+    { q:"Name one comparative word", a:["however","similarly"] },
+    { q:"Purpose of rhetorical question?", a:["engage reader"] },
+    { q:"One evaluation word", a:["overall","ultimately"] },
+    { q:"PEE stands for?", a:["point evidence explain"] },
+    { q:"Name one narrative technique", a:["flashback","foreshadowing"] }
+  ],
+
+  structured: [
+    { q:"Write paragraph structure (PEE)",
+      scaffold: S(
+        ["Point","Evidence (quote)","Explain effect","Link to question"],
+        ["Point + quote + effect"],
+        ["Clear paragraph"]
+      )
+    },
+    { q:"Essay intro structure",
+      scaffold: S(
+        ["Thesis","2 key points","Tone established"],
+        ["Thesis + roadmap"],
+        ["Strong thesis"]
+      )
+    },
+    { q:"Comparative structure",
+      scaffold: S(
+        ["Similarity","Difference","Effect"],
+        ["Compare + judge"],
+        ["Analytical comparison"]
+      )
+    },
+    { q:"Personal essay opening",
+      scaffold: S(
+        ["Engaging hook","Clear direction"],
+        ["Hook + focus"],
+        ["Focused opening"]
+      )
+    },
+    { q:"Speech structure",
+      scaffold: S(
+        ["Address audience","Clear argument","Strong close"],
+        ["Audience + argument"],
+        ["Strong close"]
+      )
+    }
+  ],
+
+  cloze: [
+    { text:"A paragraph should make a ___ then support it with ___.", blanks:["point","evidence"] },
+    { text:"A thesis states the main ___ of the essay.", blanks:["argument"] },
+    { text:"Imagery creates a mental ___.", blanks:["picture"] },
+    { text:"Compare texts using ___ and ___ language.", blanks:["analytical","evaluative"] },
+    { text:"A conclusion should restate the ___ clearly.", blanks:["thesis"] }
+  ]
+};
+
+/* =========================
+   OTHER SUBJECTS
+========================= */
+
+function recallTemplate(subject){
+  return {
+    rapid:[
+      { q:`${subject}: define a key term`, a:["*"] },
+      { q:`${subject}: give one example`, a:["*"] },
+      { q:`${subject}: name a concept`, a:["*"] },
+      { q:`${subject}: one evaluation word`, a:["overall","therefore"] },
+      { q:`${subject}: command word meaning explain`, a:["explain"] },
+      { q:`${subject}: command word meaning compare`, a:["compare"] },
+      { q:`${subject}: one diagram/data term`, a:["label","axis","trend"] },
+      { q:`${subject}: state one advantage`, a:["*"] },
+      { q:`${subject}: state one disadvantage`, a:["*"] },
+      { q:`${subject}: name a case study`, a:["*"] }
+    ],
+    structured:[
+      { q:`${subject}: short answer scaffold`,
+        scaffold:S(
+          ["Define","Explain","Example","Link"],
+          ["Define + example"],
+          ["Clear answer"]
         )
       },
-      { q:`${name}: 12-mark scaffold (3 paragraphs)`,
-        a:["*"],
-        scaffold: S(
-          ["P1: Point + example", "P2: Point + example", "P3: Point + evaluate/judge"],
-          ["2 points + judgement"],
-          ["3 key points"]
+      { q:`${subject}: 12-mark structure`,
+        scaffold:S(
+          ["3 paragraphs","Example each","Evaluation"],
+          ["Point + example"],
+          ["Concise structure"]
         )
       },
-      { q:`${name}: data/diagram scaffold`,
-        a:["*"],
-        scaffold: S(
-          ["State the trend", "Give numbers", "Explain why", "Link back to question"],
-          ["Trend + numbers + why"],
-          ["Trend + why"]
+      { q:`${subject}: data response`,
+        scaffold:S(
+          ["Trend","Evidence","Explain"],
+          ["Trend + explain"],
+          ["Clear explanation"]
         )
       },
-      { q:`${name}: revision loop scaffold`,
-        a:["*"],
-        scaffold: S(
-          ["Recall (2 mins)", "Test (5 mins)", "Fix errors (3 mins)", "Retest (2 mins)"],
-          ["Test → fix → retest"],
-          ["Retest"]
+      { q:`${subject}: evaluation scaffold`,
+        scaffold:S(
+          ["Argument","Counterpoint","Judgement"],
+          ["Argument + judgement"],
+          ["Clear judgement"]
         )
       },
-      { q:`${name}: exam habit scaffold`,
-        a:["*"],
-        scaffold: S(
-          ["Underline command word", "Plan 30 seconds", "Answer to marks", "Final check"],
-          ["Command word + plan + check"],
-          ["Answer to marks"]
+      { q:`${subject}: exam timing`,
+        scaffold:S(
+          ["Plan","Write","Check"],
+          ["Plan + check"],
+          ["Efficient structure"]
         )
       }
-    ];
+    ],
+    cloze:[
+      { text:`${subject}: A strong answer defines the ___ and gives an ___.`, blanks:["term","example"] },
+      { text:`${subject}: Always respond to the command ___ carefully.`, blanks:["word"] },
+      { text:`${subject}: Use evidence to support your ___.`, blanks:["point"] },
+      { text:`${subject}: Evaluation requires a clear ___.`, blanks:["judgement"] },
+      { text:`${subject}: Match your detail to the available ___.`, blanks:["marks"] }
+    ]
+  };
+}
 
-    const cloze = [
-      { text:`${name}: A strong answer should define the ___, then give an ___, then link to the ___.`, blanks:["term","example","question"], bank:["term","example","question","title"] },
-      { text:`${name}: In exams, match your detail to the ___ available.`, blanks:["marks"], bank:["marks","minutes","mood"] },
-      { text:`${name}: Always respond to the command word: ___ / explain / evaluate.`, blanks:["state"], bank:["state","sleep","sing"] },
-      { text:`${name}: A good judgement uses "Overall," plus a clear ___.`, blanks:["reason"], bank:["reason","rhyme","rule"] },
-      { text:`${name}: Improvement comes from ___, not just repetition.`, blanks:["feedback"], bank:["feedback","luck","silence"] }
-    ];
+window.DRILL_BANK = {
+  Maths,
+  Biology,
+  English,
+  Spanish: recallTemplate("Spanish"),
+  French: recallTemplate("French"),
+  German: recallTemplate("German"),
+  Accounting: recallTemplate("Accounting"),
+  Economics: recallTemplate("Economics"),
+  Physics: recallTemplate("Physics"),
+  Chemistry: recallTemplate("Chemistry"),
+  PE: recallTemplate("PE"),
+  "Home Ec": recallTemplate("Home Ec"),
+  History: recallTemplate("History"),
+  Geography: recallTemplate("Geography"),
+  Business: recallTemplate("Business"),
+  Art: recallTemplate("Art")
+};
 
-    return { rapid, structured, cloze };
-  }
+window.__NORM = N;
 
-  window.DRILL_BANK = DRILL_BANK;
-  window.__NORM = N;
 })();
