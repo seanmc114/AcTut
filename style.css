@@ -1,0 +1,68 @@
+body {
+  background: #0e1117;
+  color: white;
+  font-family: Arial;
+  margin: 0;
+}
+
+.container {
+  padding: 20px;
+}
+
+header {
+  text-align: center;
+}
+
+.summary {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+}
+
+.summary div {
+  background: #1f2630;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 15px;
+}
+
+.tile {
+  background: #1f2630;
+  padding: 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.tile:hover {
+  background: #2c3545;
+}
+
+.progressBar {
+  background: #333;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.progressFill {
+  height: 10px;
+  background: #4cafef;
+}
+
+.hidden {
+  display: none;
+}
+
+#subjectModal {
+  background: #1f2630;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 10px;
+}
