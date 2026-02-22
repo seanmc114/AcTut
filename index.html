@@ -1,244 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>LC Performance Coach</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>LC Performance Engine</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
 
-  <div class="watermark"></div>
+<div class="bg"></div>
+<div class="crest"></div>
 
-  <div class="wrap">
-    <header class="top">
-      <div class="brand">
-        <div class="logo">LC</div>
-        <div>
-          <h1>Performance Coach</h1>
-          <div class="sub">Real exam coaching that plays like a game.</div>
-        </div>
-      </div>
+<div class="app">
 
-      <div id="who" class="who hidden">
-        <span class="pill">Player: <strong id="whoName"></strong></span>
-        <button class="btn ghost" id="btnReset">Reset (this device)</button>
-      </div>
-    </header>
+<header>
+  <h1>LC Performance Engine</h1>
+  <p class="tag">Train smart. Perform better.</p>
+</header>
 
-    <!-- SETUP -->
-    <section id="setup" class="card">
-      <h2>Start</h2>
-      <p class="muted">Pick subjects + level. Add results. Get focus + drills. Track improvement.</p>
+<section id="setup" class="card">
+  <h2>Start</h2>
+  <input id="name" placeholder="Enter a nickname">
+  <button class="primary" id="btnStart">Enter</button>
+</section>
 
-      <div class="grid2">
-        <div>
-          <label for="name">Name</label>
-          <input id="name" placeholder="e.g. Cian" autocomplete="off" />
-        </div>
-        <div>
-          <label for="goal">Goal (optional)</label>
-          <input id="goal" placeholder="e.g. 520 points / H2s" autocomplete="off" />
-        </div>
-      </div>
-
-      <div class="card soft">
-        <div class="rowBetween">
-          <h3>Your subjects</h3>
-          <span class="tiny muted">Tick + choose level</span>
-        </div>
-        <div id="subjectPicker" class="picker"></div>
-      </div>
-
-      <div class="row">
-        <button class="btn" id="btnStart">Enter</button>
-      </div>
-    </section>
-
-    <!-- DASH -->
-    <section id="dash" class="hidden">
-      <section class="stats3">
-        <div class="card stat">
-          <div class="statTitle">Overall Average</div>
-          <div class="statBig" id="overallAvg">—</div>
-          <div class="tiny muted">Across subjects with results</div>
-        </div>
-        <div class="card stat">
-          <div class="statTitle">Projected Band</div>
-          <div class="statBig" id="overallBand">—</div>
-          <div class="tiny muted">From average (not a promise)</div>
-        </div>
-        <div class="card stat">
-          <div class="statTitle">Marks Recovered</div>
-          <div class="statBig" id="marksRecovered">0</div>
-          <div class="tiny muted">Change since first entry per subject</div>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="rowBetween">
-          <h2>Subjects</h2>
-          <span class="tiny muted">Click a tile → add results → coach → drills</span>
-        </div>
-        <div id="tiles" class="tiles"></div>
-      </section>
-    </section>
-
-    <!-- MODAL -->
-    <section id="modal" class="modal hidden">
-      <div class="modalCard">
-        <div class="rowBetween">
-          <div>
-            <h2 id="mTitle">Subject</h2>
-            <div class="muted" id="mMeta">Level • Sections</div>
-          </div>
-          <button class="btn ghost" id="btnClose">Close</button>
-        </div>
-
-        <div class="grid3">
-          <div>
-            <label for="mType">Result type</label>
-            <select id="mType">
-              <option>Christmas/Winter</option>
-              <option>Pre-Mock</option>
-              <option>Mock</option>
-              <option>Class Test</option>
-              <option>Practice</option>
-            </select>
-          </div>
-          <div>
-            <label for="mDate">Date</label>
-            <input id="mDate" type="date" />
-          </div>
-          <div>
-            <label for="mOverall">Overall % (optional if sections filled)</label>
-            <input id="mOverall" type="number" min="0" max="100" placeholder="e.g. 58" />
-          </div>
-        </div>
-
-        <div class="card soft">
-          <div class="rowBetween">
-            <h3>Section breakdown (recommended)</h3>
-            <span class="tiny muted">Best targeting comes from section weakness</span>
-          </div>
-          <div id="sectionBox" class="sections"></div>
-          <div class="tiny muted" id="weightedPreview"></div>
-        </div>
-
-        <div class="row">
-          <button class="btn" id="btnAdd">Add result</button>
-          <button class="btn ghost" id="btnCoach">Coach me (AI)</button>
-        </div>
-
-        <div class="split">
-          <div class="card">
-            <div class="rowBetween">
-              <h3>Progress</h3>
-              <span class="tiny muted" id="historyLine"></span>
-            </div>
-            <canvas id="chart"></canvas>
-          </div>
-
-          <div class="card">
-            <div class="rowBetween">
-              <h3>Coach</h3>
-              <span class="pill tiny" id="supportLabel">Build Mode</span>
-            </div>
-
-            <div id="coachBox" class="coachBox">
-              <div class="muted">Add at least two results for best targeting.</div>
-            </div>
-
-            <h3 class="mt">Drills</h3>
-            <ul id="drillList" class="drills">
-              <li class="muted">Drills appear after AI coaching.</li>
-            </ul>
-
-            <div class="mt row">
-              <label class="tiny muted" style="margin:0 8px 0 0;">Mode</label>
-              <select id="drillMode" style="max-width:220px">
-                <option value="rapid10">Rapid-10 (fast)</option>
-                <option value="structured5">Structured-5 (steps)</option>
-                <option value="cloze">Cloze (gaps)</option>
-              </select>
-
-              <label class="tiny muted" style="margin:0 8px 0 12px;">Difficulty</label>
-              <select id="drillDiff" style="max-width:180px">
-                <option value="auto" selected>Auto (coach)</option>
-                <option value="easy">Easy</option>
-                <option value="mid">Mid</option>
-                <option value="hard">Hard (unlock)</option>
-                <option value="secret">Secret (unlock)</option>
-              </select>
-            </div>
-
-            <div class="mt row">
-              <button class="btn" id="btnStartDrill">Start drill</button>
-            </div>
-
-            <div class="mt tiny muted">
-              PB triggers confetti + (optional) fanfare. Hard/Secret unlock with strong work.
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- DRILL SCREEN -->
-    <section id="drillScreen" class="modal hidden">
-      <div class="modalCard drillCard">
-        <div class="rowBetween">
-          <div>
-            <h2 id="dTitle">Drill</h2>
-            <div class="muted" id="dMeta">Timed sprint</div>
-          </div>
-          <button class="btn ghost" id="btnExitDrill">Exit</button>
-        </div>
-
-        <div class="card soft">
-          <div class="rowBetween">
-            <div class="big" id="dTimer">00:00</div>
-            <div class="pill">Best: <strong id="dBest">—</strong></div>
-          </div>
-          <div class="muted mt" id="dHelp">
-            Rapid-10: 10 quick prompts. Type the answer. Enter.
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="prompt" id="dPrompt">Press Start</div>
-
-          <div id="clozeBank" class="clozeBank hidden"></div>
-          <div id="scaffold" class="scaffold hidden"></div>
-
-          <div class="row mt">
-            <input id="dAnswer" placeholder="Type answer…" autocomplete="off" />
-            <button class="btn" id="btnSubmit">Submit</button>
-          </div>
-
-          <div class="rowBetween mt">
-            <button class="btn" id="btnStartRound">Start</button>
-            <div class="pill">Score: <strong id="dScore">0</strong> / <span id="dTotal">10</span></div>
-          </div>
-        </div>
-
-        <canvas id="confetti"></canvas>
-        <audio id="fanfare" src="fanfare.mp3" preload="auto"></audio>
-
-        <div class="tiny muted mt">
-          Cloze answers: type blanks separated by <strong>|</strong> (e.g. <em>blank1 | blank2 | blank3</em>)
-        </div>
-      </div>
-    </section>
-
-    <footer class="foot">
-      © Synge Street CBS 2026 • Imagination and Perseverance
-    </footer>
+<section id="dash" class="hidden">
+  <div class="stats">
+    <div class="stat">
+      <span>Overall</span>
+      <div id="overallAvg">—</div>
+    </div>
+    <div class="stat">
+      <span>Band</span>
+      <div id="overallBand">—</div>
+    </div>
   </div>
 
-  <script src="ai.js"></script>
-  <script src="drills.js"></script>
-  <script src="script.js"></script>
+  <div id="tiles" class="tiles"></div>
+</section>
+
+<footer>
+  © Synge Street CBS 2026 · Imagination and Perseverance
+</footer>
+
+</div>
+
+<script src="ai.js"></script>
+<script src="drills.js"></script>
+<script src="script.js"></script>
+
 </body>
 </html>
