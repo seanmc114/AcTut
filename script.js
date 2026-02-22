@@ -41,8 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const today = new Date().toISOString().slice(0,10);
   byId("mDate").value = today;
 
-  if (state.profile?.name) showDash();
-  else showSetup();
+ showSetup();
 });
 
 function wire(){
