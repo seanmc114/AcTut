@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LC Performance Coach</title>
 <link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -26,12 +25,11 @@
 
   <input id="name" placeholder="Enter a nickname">
 
-  <input id="goal" placeholder="Target (e.g. 480 points)">
-
   <div id="subjectPicker"></div>
 
   <button id="btnStart" class="primary">Enter</button>
 </section>
+
 <!-- DASHBOARD -->
 <section id="dash" class="hidden">
 
@@ -46,22 +44,14 @@
     </div>
   </div>
 
-
-
+  <h3 style="margin:25px 0 10px;">Your Subjects</h3>
   <div id="tiles" class="tiles"></div>
 
-</section>
+  <button id="btnReset" class="primary" style="margin-top:20px;">
+    Reset (this device)
+  </button>
 
-<!-- DRILL MODAL -->
-<div id="drillModal" class="hidden">
-  <div class="card">
-    <h3>Drill</h3>
-    <div id="dPrompt"></div>
-    <input id="dAnswer" placeholder="Your answer">
-    <button id="btnSubmit" class="primary">Submit</button>
-    <button id="btnExitDrill">Exit</button>
-  </div>
-</div>
+</section>
 
 <footer>
   © Synge Street CBS 2026 · Imagination and Perseverance
@@ -69,9 +59,6 @@
 
 </div>
 
-<script src="ai.js"></script>
-<script src="drills.js"></script>
 <script src="script.js"></script>
-
 </body>
 </html>
