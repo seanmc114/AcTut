@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>LC Performance Engine</title>
+<title>LC Performance Coach</title>
 <link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -16,17 +16,20 @@
 <div class="app">
 
 <header>
-  <h1>LC Performance Engine</h1>
+  <h1>LC Performance Coach</h1>
   <p class="tag">Train smart. Perform better.</p>
 </header>
 
+<!-- SETUP -->
 <section id="setup" class="card">
   <h2>Start</h2>
   <input id="name" placeholder="Enter a nickname">
-  <button class="primary" id="btnStart">Enter</button>
+  <button id="btnStart" class="primary">Enter</button>
 </section>
 
+<!-- DASHBOARD -->
 <section id="dash" class="hidden">
+
   <div class="stats">
     <div class="stat">
       <span>Overall</span>
@@ -38,8 +41,28 @@
     </div>
   </div>
 
+  <div class="card">
+    <h3>Add Result</h3>
+    <input type="date" id="mDate">
+    <button id="btnAdd" class="primary">Add Result</button>
+    <button id="btnCoach" class="primary">Coach Me</button>
+    <button id="btnReset" class="primary">Reset</button>
+  </div>
+
   <div id="tiles" class="tiles"></div>
+
 </section>
+
+<!-- DRILL MODAL -->
+<div id="drillModal" class="hidden">
+  <div class="card">
+    <h3>Drill</h3>
+    <div id="dPrompt"></div>
+    <input id="dAnswer" placeholder="Your answer">
+    <button id="btnSubmit" class="primary">Submit</button>
+    <button id="btnExitDrill">Exit</button>
+  </div>
+</div>
 
 <footer>
   © Synge Street CBS 2026 · Imagination and Perseverance
