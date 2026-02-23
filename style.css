@@ -150,3 +150,6 @@ footer{
   font-weight:700;
   opacity:.7;
 }
+.hidden{
+  display:none !important;
+}
