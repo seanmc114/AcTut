@@ -1,54 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LC Performance Coach</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LC Performance Coach</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
 
-<div class="app">
+  <div class="bg"></div>
+  <div class="crest"></div>
 
-<header>
-  <h1>LC Performance Coach</h1>
-  <p class="tag">Train smart. Perform better.</p>
-</header>
+  <div class="app">
 
-<section id="setup" class="card">
-  <h2>Start</h2>
-  <input id="name" placeholder="Enter a nickname">
-  <div id="subjectPicker"></div>
-  <button id="btnStart" class="primary">Enter</button>
-</section>
+    <header class="top">
+      <div>
+        <h1>LC Performance Coach</h1>
+        <p class="tag">Train smart. Perform better.</p>
+      </div>
+    </header>
 
-<section id="dash" class="hidden">
+    <!-- SETUP -->
+    <section id="setup" class="card">
+      <h2>Start</h2>
+      <p class="muted">Pick your subjects and level. You can change them later.</p>
 
-  <div class="stats">
-    <div class="stat">
-      <span>Overall</span>
-      <div id="overallAvg">—</div>
-    </div>
-    <div class="stat">
-      <span>Band</span>
-      <div id="overallBand">—</div>
-    </div>
+      <input id="name" placeholder="Enter a nickname (no real names)" autocomplete="off" />
+
+      <div id="subjectPicker" class="picker"></div>
+
+      <button id="btnStart" class="btn primary">Enter</button>
+    </section>
+
+    <!-- DASH -->
+    <section id="dash" class="hidden">
+      <div class="stats">
+        <div class="stat">
+          <div class="statLabel">Overall</div>
+          <div id="overallAvg" class="statBig">—</div>
+        </div>
+        <div class="stat">
+          <div class="statLabel">Band</div>
+          <div id="overallBand" class="statBig">—</div>
+        </div>
+        <div class="stat">
+          <div class="statLabel">Weakest</div>
+          <div id="overallWeak" class="statSmall">—</div>
+        </div>
+      </div>
+
+      <div class="rowBetween">
+        <h2 class="h2">Your Subjects</h2>
+        <button id="btnReset" class="btn ghost">Reset</button>
+      </div>
+
+      <div id="tiles" class="tiles"></div>
+
+      <div id="subjectPanel" class="card hidden"></div>
+    </section>
+
+    <footer class="foot">
+      © Synge Street CBS 2026 · Imagination and Perseverance
+    </footer>
+
   </div>
 
-  <h3>Your Subjects</h3>
-  <div id="tiles" class="tiles"></div>
-
-  <div id="subjectPanel" class="card hidden"></div>
-
-  <button id="btnReset" class="primary">Reset (this device)</button>
-
-</section>
-
-<footer>
-  © Synge Street CBS 2026 · Imagination and Perseverance
-</footer>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
