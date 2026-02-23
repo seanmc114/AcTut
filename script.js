@@ -1,6 +1,4 @@
-/* LC Performance Coach — Stable Core Version */
-
-const LS_KEY = "SYNGE_LC_COACH_V3";
+const LS_KEY = "SYNGE_LC_COACH_V4";
 let state = loadState();
 
 const CORE = [
@@ -8,10 +6,6 @@ const CORE = [
   "Accounting","Economics","Physics","Biology","Chemistry",
   "PE","Home Ec","History","Geography","Business","Art"
 ];
-
-const TEMPLATES = {
-  default:{ levelOptions:["H","O"], defaultLevel:"H" }
-};
 
 document.addEventListener("DOMContentLoaded", () => {
   wire();
@@ -25,32 +19,24 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function wire(){
-  safeClick("btnStart", start);
-  safeClick("btnReset", resetLocal);
-}
-
-function safeClick(id, handler){
-  const el = document.getElementById(id);
-  if(el) el.addEventListener("click", handler);
+  byId("btnStart")?.addEventListener("click", start);
+  byId("btnReset")?.addEventListener("click", resetLocal);
 }
 
 function showSetup(){
-  byId("setup")?.classList.remove("hidden");
-  byId("dash")?.classList.add("hidden");
+  byId("setup").classList.remove("hidden");
+  byId("dash").classList.add("hidden");
 }
 
 function showDash(){
-  byId("setup")?.classList.add("hidden");
-  byId("dash")?.classList.remove("hidden");
-
+  byId("setup").classList.add("hidden");
+  byId("dash").classList.remove("hidden");
   renderTiles();
   renderOverall();
 }
 
 function renderPicker(){
   const box = byId("subjectPicker");
-  if(!box) return;
-
   box.innerHTML = "";
 
   CORE.forEach(name=>{
@@ -71,7 +57,6 @@ function renderPicker(){
 }
 
 function start(){
-
   const name = byId("name").value.trim();
   if(!name){
     alert("Enter a nickname.");
@@ -96,8 +81,11 @@ function start(){
 
   state.profile = { name, picked };
   state.results = state.results || {};
+
   picked.forEach(p=>{
-    if(!state.results[p.subject]) state.results[p.subject] = [];
+    if(!state.results[p.subject]){
+      state.results[p.subject] = [];
+    }
   });
 
   saveState();
@@ -106,8 +94,6 @@ function start(){
 
 function renderTiles(){
   const tiles = byId("tiles");
-  if(!tiles) return;
-
   tiles.innerHTML = "";
 
   state.profile.picked.forEach(({subject})=>{
@@ -126,10 +112,59 @@ function renderTiles(){
     `;
 
     tile.addEventListener("click", ()=>{
-      alert("Subject page placeholder (modal reconnect next step)");
+      openSubjectPanel(subject);
     });
 
     tiles.appendChild(tile);
+  });
+}
+
+function openSubjectPanel(subject){
+
+  const panel = byId("subjectPanel");
+  panel.classList.remove("hidden");
+
+  const results = state.results[subject] || [];
+  const avg = results.length
+    ? Math.round(results.reduce((a,b)=>a+b.score,0)/results.length)
+    : null;
+
+  panel.innerHTML = `
+    <h2>${subject}</h2>
+    <p><strong>Average:</strong> ${avg === null ? "—" : avg + "%"}</p>
+
+    <input type="number" id="newScore" placeholder="Enter % result">
+    <button id="saveScore" class="primary">Save Result</button>
+    <button id="closePanel" style="margin-left:10px;">Close</button>
+
+    <hr style="margin:20px 0">
+
+    <div>
+      <strong>Results:</strong><br>
+      ${
+        results.length
+        ? results.map(r=>`${r.score}%`).join("<br>")
+        : "No results yet."
+      }
+    </div>
+  `;
+
+  byId("saveScore").addEventListener("click", ()=>{
+    const val = Number(byId("newScore").value);
+    if(!Number.isFinite(val) || val < 0 || val > 100){
+      alert("Enter valid percentage.");
+      return;
+    }
+
+    state.results[subject].push({ score: val });
+    saveState();
+    renderTiles();
+    renderOverall();
+    openSubjectPanel(subject);
+  });
+
+  byId("closePanel").addEventListener("click", ()=>{
+    panel.classList.add("hidden");
   });
 }
 
