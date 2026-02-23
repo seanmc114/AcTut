@@ -109,19 +109,41 @@ function renderPicker(){
 }
 
 function start(){
+
   const name = byId("name").value.trim();
-  const goal = byId("goal").value.trim();
-  if(!name) return;
+  if(!name){
+    alert("Enter a nickname.");
+    return;
+  }
 
   const picked = [];
-  document.querySelectorAll("input[type=checkbox][data-sub]").forEach(cb=>{
+
+  document.querySelectorAll('input[type="checkbox"][data-sub]').forEach(cb=>{
     if(cb.checked){
       const subject = cb.dataset.sub;
-      const lvl = document.querySelector(`select[data-lvl="${cssEsc(subject)}"]`).value;
-      picked.push({ subject, level:lvl });
+      const levelSelect = document.querySelector(`select[data-lvl="${CSS.escape(subject)}"]`);
+      const level = levelSelect ? levelSelect.value : "H";
+
+      picked.push({ subject, level });
+
       if(!state.results[subject]) state.results[subject] = [];
       ensureSupport(subject);
     }
+  });
+
+  if(!picked.length){
+    alert("Pick at least one subject.");
+    return;
+  }
+
+  state.profile = {
+    name,
+    picked
+  };
+
+  saveState();
+  showDash();
+}
   });
   if(!picked.length){ alert("Pick at least one subject."); return; }
 
