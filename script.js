@@ -45,17 +45,28 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function wire(){
-  byId("btnStart").addEventListener("click", start);
-  byId("btnClose").addEventListener("click", closeModal);
-  byId("btnAdd").addEventListener("click", addResult);
-  byId("btnCoach").addEventListener("click", coachMe);
-  byId("btnReset").addEventListener("click", resetLocal);
 
-  byId("btnStartDrill").addEventListener("click", openDrill);
-  byId("btnExitDrill").addEventListener("click", exitDrill);
-  byId("btnStartRound").addEventListener("click", startRound);
-  byId("btnSubmit").addEventListener("click", submitAnswer);
-  byId("dAnswer").addEventListener("keydown", (e)=>{ if(e.key==="Enter") submitAnswer(); });
+  const safeClick = (id, handler) => {
+    const el = byId(id);
+    if(el) el.addEventListener("click", handler);
+  };
+
+  safeClick("btnStart", start);
+  safeClick("btnClose", closeModal);
+  safeClick("btnAdd", addResult);
+  safeClick("btnCoach", coachMe);
+  safeClick("btnReset", resetLocal);
+  safeClick("btnStartDrill", openDrill);
+  safeClick("btnExitDrill", exitDrill);
+  safeClick("btnStartRound", startRound);
+  safeClick("btnSubmit", submitAnswer);
+
+  const ans = byId("dAnswer");
+  if(ans){
+    ans.addEventListener("keydown", (e)=>{
+      if(e.key==="Enter") submitAnswer();
+    });
+  }
 }
 
 function showSetup(){
