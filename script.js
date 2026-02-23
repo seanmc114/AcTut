@@ -447,20 +447,55 @@ function humanisePrompt(q, mode){
   return q;
 }
 function hintForMode(item, mode){
-  // Confidence mode: structured gives scaffold hints, rapid/cloze minimal
+
+  const subject = drill?.subject || "";
+
+  // --- STRUCTURED ---
   if(mode === "structured"){
     const sc = item.scaffold;
-    if(sc && sc.strength){
-      return `Outline hint: <strong>${String(sc.strength)}</strong>`;
-    }
-    return `Write a short outline (20+ characters).`;
-  }
-  if(mode === "cloze"){
-    return `Type the missing word(s).`;
-  }
-  return `Quick answer. Keep it tight.`;
-}
 
+    if(sc && sc.strength){
+      return `Structure guide: ${String(sc.strength)}`;
+    }
+
+    return `Start with a clear point. Add explanation.`;
+  }
+
+  // --- CLOZE ---
+  if(mode === "cloze"){
+    return `Fill the missing word(s). Think exam language.`;
+  }
+
+  // --- RAPID ---
+  if(mode === "rapid"){
+
+    // Maths clarity
+    if(subject === "Maths"){
+      if(item.q?.includes("d/dx")){
+        return "Reminder: The derivative of a constant is 0.";
+      }
+      if(item.q?.toLowerCase().includes("differentiate")){
+        return "Use the power rule: multiply by the power, reduce power by 1.";
+      }
+      return "Work step by step. Keep it clean.";
+    }
+
+    // English
+    if(subject === "English"){
+      return "Use precise terminology. Think PEE.";
+    }
+
+    // Languages
+    if(["Spanish","French","German"].includes(subject)){
+      return "Check agreement, tense, and accents.";
+    }
+
+    // Science / others
+    return "Define clearly. Use key terms.";
+  }
+
+  return "";
+}
 function submitDrillAnswer(){
   if(!drill) return;
 
