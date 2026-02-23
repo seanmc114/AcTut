@@ -552,19 +552,20 @@ function checkAnswer(item, mode, user){
 }
 
 function finishDrill(){
+
   const timeMs = Date.now() - drill.startMs;
   const timeSec = Math.max(1, Math.round(timeMs / 1000));
   const total = drill.items.length;
   const acc = Math.round((drill.correct / total) * 100);
 
-  // Confidence Mode hybrid score:
-  // mild time effect: subtract 1 point per 10 seconds, capped at 12
+  // Confidence Mode hybrid score
   const penalty = Math.min(12, Math.floor(timeSec / 10));
   const score = Math.max(0, acc - penalty);
 
-  // Save
+  // Save drill
   state.drills = state.drills || {};
   state.drills[drill.subject] = state.drills[drill.subject] || [];
+
   const entry = {
     date: new Date().toISOString(),
     sectionKey: drill.sectionKey,
@@ -573,17 +574,20 @@ function finishDrill(){
     total,
     timeSec,
     acc,
-    score
+    score,
+    answered: drill.answered
   };
+
   state.drills[drill.subject].push(entry);
   saveState();
 
-  // Compare to previous best for same subject+sectionKey
-  const hist = state.drills[drill.subject].filter(x => x.sectionKey === drill.sectionKey);
+  // Compare with previous
+  const hist = state.drills[drill.subject]
+    .filter(x => x.sectionKey === drill.sectionKey);
+
   const best = Math.max(...hist.map(x => x.score));
   const prev = hist.length >= 2 ? hist[hist.length - 2] : null;
 
-  // UI
   showOnly("drillResults");
 
   byId("drillSummary").innerHTML = `
@@ -593,18 +597,72 @@ function finishDrill(){
     <span>Best: <strong>${best}</strong></span>
   `;
 
-  byId("drillMessage").innerHTML = buildDrillMessage({
-    subject: drill.subject,
-    sectionLabel: labelSection(drill.subject, drill.level, drill.sectionKey),
-    entry,
-    prev,
-    best
-  });
+  // --- Coach Message ---
+  let message = "";
 
-  // clear session
+  if(!prev){
+    message = "First run logged. Now we build consistency.";
+  } else {
+    const diff = score - prev.score;
+
+    if(diff > 0){
+      message = `Up ${diff} from last time. That’s improvement.`;
+    } else if(diff === 0){
+      message = "Stable. Now sharpen detail.";
+    } else {
+      message = "Dip happens. Run it again steady.";
+    }
+  }
+
+  if(acc < 60){
+    message += " Focus on accuracy before speed.";
+  } else if(timeSec > 70){
+    message += " Accuracy good. Trim time next run.";
+  } else {
+    message += " Strong rep. Try beat your best.";
+  }
+
+  byId("drillMessage").innerHTML = `
+    <div><strong>${drill.subject} · ${labelSection(drill.subject, drill.level, drill.sectionKey)}</strong></div>
+    <div style="margin-top:6px">${message}</div>
+  `;
+
+  // --- FULL REVIEW BLOCK ---
+  const reviewHtml = drill.answered.map((r, i)=>{
+
+    let correctAnswer = "";
+
+    if(r.item.a && Array.isArray(r.item.a)){
+      correctAnswer = r.item.a[0];
+    }
+
+    if(r.item.blanks && Array.isArray(r.item.blanks)){
+      correctAnswer = r.item.blanks.join(", ");
+    }
+
+    if(!correctAnswer && r.item.scaffold){
+      correctAnswer = "See structured scaffold.";
+    }
+
+    return `
+      <div style="margin-top:8px;padding:8px;border-bottom:1px solid rgba(0,0,0,.05)">
+        <strong>Q${i+1}:</strong> ${r.item.q || r.item.text}<br>
+        Your answer: <span style="font-weight:700;">${r.user}</span><br>
+        ${r.ok 
+          ? '<span style="color:#00a86b;font-weight:800;">✔ Correct</span>' 
+          : `<span style="color:#d42a2a;font-weight:800;">❌ Correct: ${correctAnswer}</span>`}
+      </div>
+    `;
+  }).join("");
+
+  byId("drillMessage").insertAdjacentHTML("afterend", `
+    <div style="margin-top:14px;max-height:300px;overflow:auto;background:#fff;border-radius:12px;padding:10px;">
+      ${reviewHtml}
+    </div>
+  `);
+
   drill = null;
 }
-
 function buildDrillMessage({ subject, sectionLabel, entry, prev, best }){
   const improved = prev ? (entry.score - prev.score) : null;
 
