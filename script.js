@@ -428,9 +428,24 @@ function formatItemPrompt(item, mode){
   if(mode === "cloze"){
     return item.text || "Fill the blanks";
   }
-  return item.q || "Question";
-}
+  return humanisePrompt(item.q, mode);}
+function humanisePrompt(q, mode){
+  if(!q) return "Question";
 
+  if(q.includes("d/dx")){
+    return q.replace("d/dx", "Differentiate with respect to x:");
+  }
+
+  if(q.includes("^")){
+    return "Solve or simplify: " + q;
+  }
+
+  if(mode === "rapid"){
+    return q;
+  }
+
+  return q;
+}
 function hintForMode(item, mode){
   // Confidence mode: structured gives scaffold hints, rapid/cloze minimal
   if(mode === "structured"){
