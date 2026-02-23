@@ -153,3 +153,26 @@ footer{
 .hidden{
   display:none !important;
 }
+#subjectPicker{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
+  margin:20px 0;
+}
+
+.pickRow{
+  background:white;
+  padding:15px;
+  border-radius:15px;
+  box-shadow:0 10px 25px rgba(0,0,0,.08);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:600;
+}
+
+.pickRow select{
+  border-radius:20px;
+  padding:6px 10px;
+  border:1px solid #dbe8ff;
+}
