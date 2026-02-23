@@ -1,219 +1,149 @@
-const LS_KEY = "SYNGE_LC_COACH_V4";
+const LS_KEY = "SYNGE_LC_COACH_V5";
 let state = loadState();
 
-const CORE = [
-  "English","Maths","Spanish","French","German",
-  "Accounting","Economics","Physics","Biology","Chemistry",
-  "PE","Home Ec","History","Geography","Business","Art"
-];
+const LC_STRUCTURE = {
 
-document.addEventListener("DOMContentLoaded", () => {
-  wire();
-  renderPicker();
+  English: {
+    H:[{k:"P1",l:"Paper 1",w:50},{k:"P2",l:"Paper 2",w:50}],
+    O:[{k:"P1",l:"Paper 1",w:50},{k:"P2",l:"Paper 2",w:50}]
+  },
 
-  if(state.profile && state.profile.picked?.length){
-    showDash();
-  } else {
-    showSetup();
-  }
-});
+  Maths:{
+    H:[{k:"P1",l:"Paper 1",w:50},{k:"P2",l:"Paper 2",w:50}],
+    O:[{k:"P1",l:"Paper 1",w:50},{k:"P2",l:"Paper 2",w:50}]
+  },
 
-function wire(){
-  byId("btnStart")?.addEventListener("click", start);
-  byId("btnReset")?.addEventListener("click", resetLocal);
-}
+  Spanish:{
+    H:[
+      {k:"oral",l:"Oral",w:25},
+      {k:"aural",l:"Aural",w:25},
+      {k:"reading",l:"Reading",w:25},
+      {k:"writing",l:"Writing",w:25}
+    ],
+    O:[
+      {k:"oral",l:"Oral",w:20},
+      {k:"aural",l:"Aural",w:20},
+      {k:"reading",l:"Reading",w:30},
+      {k:"writing",l:"Writing",w:30}
+    ]
+  },
 
-function showSetup(){
-  byId("setup").classList.remove("hidden");
-  byId("dash").classList.add("hidden");
-}
+  French:{ H:[
+      {k:"oral",l:"Oral",w:25},
+      {k:"aural",l:"Aural",w:25},
+      {k:"reading",l:"Reading",w:25},
+      {k:"writing",l:"Writing",w:25}
+    ],
+    O:[
+      {k:"oral",l:"Oral",w:20},
+      {k:"aural",l:"Aural",w:20},
+      {k:"reading",l:"Reading",w:30},
+      {k:"writing",l:"Writing",w:30}
+    ]
+  },
 
-function showDash(){
-  byId("setup").classList.add("hidden");
-  byId("dash").classList.remove("hidden");
-  renderTiles();
-  renderOverall();
-}
+  German:{ H:[
+      {k:"oral",l:"Oral",w:25},
+      {k:"aural",l:"Aural",w:25},
+      {k:"reading",l:"Reading",w:25},
+      {k:"writing",l:"Writing",w:25}
+    ],
+    O:[
+      {k:"oral",l:"Oral",w:20},
+      {k:"aural",l:"Aural",w:20},
+      {k:"reading",l:"Reading",w:30},
+      {k:"writing",l:"Writing",w:30}
+    ]
+  },
 
-function renderPicker(){
-  const box = byId("subjectPicker");
-  box.innerHTML = "";
+  Biology:{H:[
+      {k:"A",l:"Short Questions",w:30},
+      {k:"B",l:"Experiments",w:20},
+      {k:"C",l:"Long Questions",w:50}
+  ],O:[
+      {k:"A",l:"Short Questions",w:40},
+      {k:"C",l:"Long Questions",w:60}
+  ]},
 
-  CORE.forEach(name=>{
-    const row = document.createElement("div");
-    row.className = "pickRow";
-    row.innerHTML = `
-      <label>
-        <input type="checkbox" data-sub="${name}">
-        ${name}
-      </label>
-      <select data-lvl="${name}">
-        <option value="H">Higher</option>
-        <option value="O">Ordinary</option>
-      </select>
-    `;
-    box.appendChild(row);
-  });
-}
+  Chemistry:{H:[
+      {k:"short",l:"Short Questions",w:40},
+      {k:"long",l:"Long Questions",w:60}
+  ],O:[
+      {k:"short",l:"Short Questions",w:40},
+      {k:"long",l:"Long Questions",w:60}
+  ]},
 
-function start(){
-  const name = byId("name").value.trim();
-  if(!name){
-    alert("Enter a nickname.");
-    return;
-  }
+  Physics:{H:[
+      {k:"short",l:"Short Questions",w:40},
+      {k:"long",l:"Long Questions",w:60}
+  ],O:[
+      {k:"short",l:"Short Questions",w:40},
+      {k:"long",l:"Long Questions",w:60}
+  ]},
 
-  const picked = [];
+  Accounting:{H:[
+      {k:"Q1",l:"Q1",w:40},
+      {k:"Q2",l:"Q2",w:30},
+      {k:"Q3",l:"Q3",w:30}
+  ],O:[
+      {k:"Q1",l:"Q1",w:40},
+      {k:"Q2",l:"Q2",w:30},
+      {k:"Q3",l:"Q3",w:30}
+  ]},
 
-  document.querySelectorAll('input[type="checkbox"][data-sub]').forEach(cb=>{
-    if(cb.checked){
-      const subject = cb.dataset.sub;
-      const sel = document.querySelector(`select[data-lvl="${subject}"]`);
-      const level = sel ? sel.value : "H";
-      picked.push({ subject, level });
-    }
-  });
+  Economics:{H:[
+      {k:"short",l:"Short Questions",w:40},
+      {k:"long",l:"Long Questions",w:60}
+  ],O:[
+      {k:"short",l:"Short Questions",w:40},
+      {k:"long",l:"Long Questions",w:60}
+  ]},
 
-  if(!picked.length){
-    alert("Pick at least one subject.");
-    return;
-  }
+  Business:{H:[
+      {k:"short",l:"Short Questions",w:40},
+      {k:"abq",l:"ABQ/Applied",w:60}
+  ],O:[
+      {k:"short",l:"Short Questions",w:40},
+      {k:"abq",l:"ABQ/Applied",w:60}
+  ]},
 
-  state.profile = { name, picked };
-  state.results = state.results || {};
+  History:{H:[
+      {k:"doc",l:"Document/Source",w:40},
+      {k:"essay",l:"Essay",w:60}
+  ],O:[
+      {k:"doc",l:"Document/Source",w:40},
+      {k:"essay",l:"Essay",w:60}
+  ]},
 
-  picked.forEach(p=>{
-    if(!state.results[p.subject]){
-      state.results[p.subject] = [];
-    }
-  });
+  Geography:{H:[
+      {k:"short",l:"Short Questions",w:40},
+      {k:"long",l:"Long Questions",w:60}
+  ],O:[
+      {k:"short",l:"Short Questions",w:40},
+      {k:"long",l:"Long Questions",w:60}
+  ]},
 
-  saveState();
-  showDash();
-}
+  "Home Ec":{H:[
+      {k:"core",l:"Core",w:60},
+      {k:"elective",l:"Elective",w:40}
+  ],O:[
+      {k:"core",l:"Core",w:60},
+      {k:"elective",l:"Elective",w:40}
+  ]},
 
-function renderTiles(){
-  const tiles = byId("tiles");
-  tiles.innerHTML = "";
+  PE:{H:[
+      {k:"written",l:"Written",w:70},
+      {k:"project",l:"Project",w:30}
+  ],O:[
+      {k:"written",l:"Written",w:70},
+      {k:"project",l:"Project",w:30}
+  ]},
 
-  state.profile.picked.forEach(({subject})=>{
-    const results = state.results[subject] || [];
-    const avg = results.length
-      ? Math.round(results.reduce((a,b)=>a+b.score,0)/results.length)
-      : null;
-
-    const tile = document.createElement("div");
-    tile.className = "tile";
-    tile.innerHTML = `
-      <div class="tileName">${subject}</div>
-      <div class="tileMeta">
-        ${avg === null ? "No results yet" : avg + "%"}
-      </div>
-    `;
-
-    tile.addEventListener("click", ()=>{
-      openSubjectPanel(subject);
-    });
-
-    tiles.appendChild(tile);
-  });
-}
-
-function openSubjectPanel(subject){
-
-  const panel = byId("subjectPanel");
-  panel.classList.remove("hidden");
-
-  const results = state.results[subject] || [];
-  const avg = results.length
-    ? Math.round(results.reduce((a,b)=>a+b.score,0)/results.length)
-    : null;
-
-  panel.innerHTML = `
-    <h2>${subject}</h2>
-    <p><strong>Average:</strong> ${avg === null ? "—" : avg + "%"}</p>
-
-    <input type="number" id="newScore" placeholder="Enter % result">
-    <button id="saveScore" class="primary">Save Result</button>
-    <button id="closePanel" style="margin-left:10px;">Close</button>
-
-    <hr style="margin:20px 0">
-
-    <div>
-      <strong>Results:</strong><br>
-      ${
-        results.length
-        ? results.map(r=>`${r.score}%`).join("<br>")
-        : "No results yet."
-      }
-    </div>
-  `;
-
-  byId("saveScore").addEventListener("click", ()=>{
-    const val = Number(byId("newScore").value);
-    if(!Number.isFinite(val) || val < 0 || val > 100){
-      alert("Enter valid percentage.");
-      return;
-    }
-
-    state.results[subject].push({ score: val });
-    saveState();
-    renderTiles();
-    renderOverall();
-    openSubjectPanel(subject);
-  });
-
-  byId("closePanel").addEventListener("click", ()=>{
-    panel.classList.add("hidden");
-  });
-}
-
-function renderOverall(){
-  const avgs = state.profile.picked
-    .map(p=>state.results[p.subject]||[])
-    .filter(a=>a.length)
-    .map(a=>Math.round(a.reduce((x,y)=>x+y.score,0)/a.length));
-
-  if(!avgs.length){
-    byId("overallAvg").textContent = "—";
-    byId("overallBand").textContent = "—";
-    return;
-  }
-
-  const overall = Math.round(avgs.reduce((a,b)=>a+b,0)/avgs.length);
-  byId("overallAvg").textContent = overall + "%";
-  byId("overallBand").textContent = band(overall);
-}
-
-function band(score){
-  if(score>=90) return "H1";
-  if(score>=80) return "H2";
-  if(score>=70) return "H3";
-  if(score>=60) return "H4";
-  if(score>=50) return "H5";
-  if(score>=40) return "H6";
-  return "H7/8";
-}
-
-function resetLocal(){
-  if(confirm("Reset all local data?")){
-    localStorage.removeItem(LS_KEY);
-    location.reload();
-  }
-}
-
-function loadState(){
-  const raw = localStorage.getItem(LS_KEY);
-  if(raw){
-    try{return JSON.parse(raw);}catch{}
-  }
-  return {};
-}
-
-function saveState(){
-  localStorage.setItem(LS_KEY, JSON.stringify(state));
-}
-
-function byId(id){
-  return document.getElementById(id);
-}
+  Art:{H:[
+      {k:"history",l:"History/Appreciation",w:50},
+      {k:"practical",l:"Practical/Project",w:50}
+  ],O:[
+      {k:"history",l:"History/Appreciation",w:50},
+      {k:"practical",l:"Practical/Project",w:50}
+  ]}
+};
